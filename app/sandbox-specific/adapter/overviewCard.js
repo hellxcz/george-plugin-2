@@ -1,3 +1,4 @@
+// realying on fact, that sandbox has backbone and undescore loaded
 // import backbone from 'backbone';
 // import _ from 'underscore';
 

@@ -20,8 +20,17 @@ module.exports = require('./webpack.base.babel')({
     libraryTarget: 'var',
     library: 'plugin2'
   },
+
+  externals: {
+    'babel-polyfill': 'window',
+    jquery : '$',
+    backbone: 'Backbone',
+    underscore: '_'
+  },
+
   module: {
-    loaders: [{
+    loaders: [
+    {
       test: /\.js$/, // Transform all .js files required somewhere with Babel
       loader: 'babel-loader',
       exclude: /node_modules/,
@@ -71,12 +80,7 @@ module.exports = require('./webpack.base.babel')({
 
   devtool: 'inline-source-map',
 
-  externals: {
-    'babel-polyfill': 'window',
-    'jquery' : 'window',
-    'backbone': 'window',
-    'underscore': 'window'
-  },
+
 
   resolve: {
     modules: ['app', 'node_modules'],
