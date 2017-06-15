@@ -1,0 +1,8 @@
+{
+    "moduleName": "CZ-SMART-FILTER",
+    "version": "0.1",
+    "tokenNeeded": false,
+    "hasTranslation": true,
+    "hasCSS": true,
+    "baseColor": "#79cfe1"
+}
