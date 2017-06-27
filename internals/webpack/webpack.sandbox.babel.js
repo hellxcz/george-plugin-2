@@ -10,7 +10,7 @@ var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlug
 module.exports = require('./webpack.base.babel')({
   // In production, we skip all hot-reloading stuff
   entry: [
-    path.join(process.cwd(), 'app/sandbox-adapter.js'),
+    path.join(process.cwd(), 'app/sandboxBootstrap.js'),
   ],
 
   output: {
@@ -97,9 +97,9 @@ module.exports = require('./webpack.base.babel')({
   },
 
   plugins: [
-    new BundleAnalyzerPlugin({
-               analyzerMode: 'static'
-           }),
+    // new BundleAnalyzerPlugin({
+    //            analyzerMode: 'static'
+    //        }),
 
     new webpack.ProvidePlugin({
       // make fetch available

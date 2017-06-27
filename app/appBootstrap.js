@@ -20,7 +20,7 @@ import { Provider } from 'react-redux';
 import App from 'containers/App';
 
 // Import selector for `syncHistoryWithStore`
-import { makeSelectLocationState } from 'containers/App/selectors';
+// import { makeSelectLocationState } from 'containers/OverviewCard/selectors';
 
 // Import Language Provider
 // import LanguageProvider from 'containers/LanguageProvider';
