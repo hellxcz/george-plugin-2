@@ -1,5 +1,9 @@
 import 'whatwg-fetch';
 
+class ResponseError extends Error {
+  response: any;
+}
+
 /**
  * Parses the JSON returned by a network request
  *
@@ -7,7 +11,7 @@ import 'whatwg-fetch';
  *
  * @return {object}          The parsed JSON from the request
  */
-function parseJSON(response) {
+function parseJSON(response) : Promise<any>{
   return response.json();
 }
 
@@ -18,12 +22,12 @@ function parseJSON(response) {
  *
  * @return {object|undefined} Returns either the response, or throws an error
  */
-function checkStatus(response) {
+function checkStatus(response: Response): Response {
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
 
-  const error = new Error(response.statusText);
+  const error = new ResponseError(response.statusText);
   error.response = response;
   throw error;
 }
@@ -36,7 +40,7 @@ function checkStatus(response) {
  *
  * @return {object}           The response data
  */
-export default function request(url, options) {
+export default function request(url: string, options: RequestInit): Promise<Response> {
   return fetch(url, options)
     .then(checkStatus)
     .then(parseJSON);

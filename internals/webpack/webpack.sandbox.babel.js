@@ -7,7 +7,7 @@ const OfflinePlugin = require('offline-plugin');
 
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-module.exports = require('./webpack.base.babel')({
+module.exports = (options) => ({
   // In production, we skip all hot-reloading stuff
   entry: [
     path.join(process.cwd(), 'app/sandboxBootstrap.js'),
@@ -23,64 +23,69 @@ module.exports = require('./webpack.base.babel')({
 
   externals: {
     'babel-polyfill': 'window',
-    jquery : '$',
+    jquery: '$',
     backbone: 'Backbone',
     underscore: '_'
   },
 
   module: {
     loaders: [
-    {
-      test: /\.js$/, // Transform all .js files required somewhere with Babel
-      loader: 'babel-loader',
-      exclude: /node_modules/,
-    }, {
-      // Do not transform vendor's CSS with CSS-modules
-      // The point is that they remain in global scope.
-      // Since we require these CSS files in our JS or CSS files,
-      // they will be a part of our compilation either way.
-      // So, no need for ExtractTextPlugin here.
-      test: /\.css$/,
-      include: /node_modules/,
-      loaders: ['style-loader', 'css-loader'],
-    }, {
-      test: /\.(eot|svg|ttf|woff|woff2)$/,
-      loader: 'file-loader',
-    }, {
-      test: /\.(jpg|png|gif)$/,
-      loaders: [
-        'file-loader',
-        {
-          loader: 'image-webpack-loader',
-          query: {
-            progressive: true,
-            optimizationLevel: 7,
-            interlaced: false,
-            pngquant: {
-              quality: '65-90',
-              speed: 4,
+
+
+      {
+        test: /\.js$/, // Transform all .js files required somewhere with Babel
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+      },
+
+
+      {test: /\.tsx?$/, loader: "awesome-typescript-loader"},
+
+      {
+        // Do not transform vendor's CSS with CSS-modules
+        // The point is that they remain in global scope.
+        // Since we require these CSS files in our JS or CSS files,
+        // they will be a part of our compilation either way.
+        // So, no need for ExtractTextPlugin here.
+        test: /\.css$/,
+        include: /node_modules/,
+        loaders: ['style-loader', 'css-loader'],
+      }, {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        loader: 'file-loader',
+      }, {
+        test: /\.(jpg|png|gif)$/,
+        loaders: [
+          'file-loader',
+          {
+            loader: 'image-webpack-loader',
+            query: {
+              progressive: true,
+              optimizationLevel: 7,
+              interlaced: false,
+              pngquant: {
+                quality: '65-90',
+                speed: 4,
+              },
             },
           },
+        ],
+      }, {
+        test: /\.html$/,
+        loader: 'html-loader',
+      }, {
+        test: /\.json$/,
+        loader: 'json-loader',
+      }, {
+        test: /\.(mp4|webm)$/,
+        loader: 'url-loader',
+        query: {
+          limit: 10000,
         },
-      ],
-    }, {
-      test: /\.html$/,
-      loader: 'html-loader',
-    }, {
-      test: /\.json$/,
-      loader: 'json-loader',
-    }, {
-      test: /\.(mp4|webm)$/,
-      loader: 'url-loader',
-      query: {
-        limit: 10000,
-      },
-    }],
+      }],
   },
 
   devtool: 'inline-source-map',
-
-
 
   resolve: {
     modules: ['app', 'node_modules'],
@@ -88,6 +93,7 @@ module.exports = require('./webpack.base.babel')({
       '.js',
       '.jsx',
       '.react.js',
+      '.ts', '.tsx',
     ],
     mainFields: [
       'browser',
@@ -116,24 +122,24 @@ module.exports = require('./webpack.base.babel')({
     }),
     new webpack.NamedModulesPlugin(),
 
-      new HtmlWebpackPlugin({
-          template: 'app/index.html',
-          filename: 'ignore-me',
-          inject: true
-          // minify: {
-          //   removeComments: true,
-          //   collapseWhitespace: true,
-          //   removeRedundantAttributes: true,
-          //   useShortDoctype: true,
-          //   removeEmptyAttributes: true,
-          //   removeStyleLinkTypeAttributes: true,
-          //   keepClosingSlash: true,
-          //   minifyJS: true,
-          //   minifyCSS: true,
-          //   minifyURLs: true,
-          // },
-          // inject: true,
-      })
+    new HtmlWebpackPlugin({
+      template: 'app/index.html',
+      filename: 'ignore-me',
+      inject: true
+      // minify: {
+      //   removeComments: true,
+      //   collapseWhitespace: true,
+      //   removeRedundantAttributes: true,
+      //   useShortDoctype: true,
+      //   removeEmptyAttributes: true,
+      //   removeStyleLinkTypeAttributes: true,
+      //   keepClosingSlash: true,
+      //   minifyJS: true,
+      //   minifyCSS: true,
+      //   minifyURLs: true,
+      // },
+      // inject: true,
+    })
 
     // new webpack.optimize.CommonsChunkPlugin({
     //   name: 'vendor',
@@ -179,7 +185,7 @@ module.exports = require('./webpack.base.babel')({
     //     additional: ['*.chunk.js'],
     //   },
 
-      // Removes warning for about `additional` section usage
+    // Removes warning for about `additional` section usage
     //   safeToUseOptionalCaches: true,
     //
     //   AppCache: false,

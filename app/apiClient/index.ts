@@ -1,10 +1,10 @@
 import request from './request';
 
-let apiUrl;
+let apiUrl: string;
 
-let defaultHeaders;
+let defaultHeaders : any;
 
-export function init(_apiUrl, _defaultHeaders) {
+export function init(_apiUrl: string, _defaultHeaders: any) {
 
   apiUrl = _apiUrl;
   defaultHeaders = _defaultHeaders;
@@ -15,15 +15,15 @@ const catchFunc = () => {
 
 };
 
-function get(urlTail) {
+function get<T>(urlTail: string): Promise<T> {
 
   return request(apiUrl + urlTail,
-  {
-    method: 'GET',
-    headers : defaultHeaders
-  })
-  .catch(catchFunc)
-  .then(logJson);
+    {
+      method: 'GET',
+      headers : defaultHeaders
+    })
+    .catch(catchFunc)
+    .then(logJson);
 
 }
 
@@ -39,12 +39,9 @@ export function getCategories() {
 }
 
 export function getCategoryDetails(category) {
-
   return get(`my/categorization/categories/${category}`);
-
 }
 
 export function getCategoryTransactions(category) {
-
   return get(`my/categorization/categories/${category}/transactions`);
 }
