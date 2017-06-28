@@ -1,10 +1,20 @@
+import * as React from 'react';
 
-const innerCardStyle = {
+
+import { CSSProperties } from 'react';
+
+
+const innerCardStyle: CSSProperties = {
   overflow: 'auto'
 };
 
+export interface Props {
+  header: JSX.Element;
+  content: JSX.Element;
+  footer: JSX.Element;
+}
 
-export default (({header, content, footer}) => (
+const Card : React.SFC<Props> = (({header, content, footer}) => (
 
     <div
       className="overview-block box-saveable box-bottom-btn box-groupable box-canbegrouped box-canbemain box-size-md ui-widget ui-helper-clearfix">
@@ -26,7 +36,7 @@ export default (({header, content, footer}) => (
           </div>
           <div className="displayinner bottomButton box-visible-md box-visible-lg">
             <a className="nobubble btn btn-block btn-lg btn-light actionBtn">
-              {footer}
+              { footer }
             </a>
           </div>
         </div>
@@ -37,3 +47,5 @@ export default (({header, content, footer}) => (
   )
 
 );
+
+export default Card;

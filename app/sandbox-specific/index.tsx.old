@@ -1,35 +1,53 @@
-import React, {Component} from 'react';
-
-import {getCategoryDetails, getCategoryTransactions} from '../../apiClient';
+import * as React from 'react';
+import {
+  Component,
+  CSSProperties
+} from 'react';
+import {
+  getCategoryDetails,
+  getCategoryTransactions
+} from '../apiClient';
+import {
+  CategoryDetail,
+  Transaction
+} from '../apiClient/dtos';
 
 const transactionCategory = 'FOOD';
 
 // const transactionCategory = 'WITHDRAWAL';
 
-export default class DashboardCard extends Component {
+interface State {
+
+  categoryDetails: {[id:string]:CategoryDetail};
+
+  transactions: Transaction[];
+
+}
+
+interface Properties {
+
+}
+
+export default class DashboardCard extends Component<Properties, State> {
 
   constructor(props) {
 
     super(props);
 
-    this.state =
+    this.setState(
       {
-        data: {
+        categoryDetails: {},
 
-          total: {},
+        transactions: []
 
-          transactions: {
-            collection: []
-          }
-        }
-      };
+      });
 
     getCategoryDetails(transactionCategory)
       .then(categoryDetails => {
 
         this.setState((prevState, props) => {
 
-          return {...prevState}.data.total = categoryDetails;
+          return { ...prevState }.categoryDetails = categoryDetails;
 
         })
 
@@ -39,7 +57,7 @@ export default class DashboardCard extends Component {
       .then(transactions => {
         this.setState((prevState, props) => {
 
-          return {...prevState}.data.transactions.collection = transactions.collection;
+          return { ...prevState }.transactions = transactions.collection;
 
         })
       });
@@ -70,7 +88,7 @@ export default class DashboardCard extends Component {
 
     };
 
-    const innerCardStyle = {
+    const innerCardStyle: CSSProperties = {
       overflow: 'auto'
     };
 
@@ -91,7 +109,7 @@ export default class DashboardCard extends Component {
             <div className="paddedcontainer summarycontainer box-visible-md box-visible-lg">
 
               {
-                this.state.data.transactions.collection.map((item) => {
+                this.state.transactions.map((item) => {
                   return <div> {getImg(item)} {item.amount.value} </div>;
                 })
 
@@ -102,8 +120,8 @@ export default class DashboardCard extends Component {
               <a className="nobubble btn btn-block btn-lg btn-light actionBtn">
                 Total {
 
-                Object.keys(this.state.data.total).map(key => {
-                  const item = this.state.data.total[key];
+                Object.keys(this.state.categoryDetails).map(key => {
+                  const item = this.state.categoryDetails[key];
 
                   return <div> {key}: {item.value} </div>;
                 })
@@ -119,5 +137,3 @@ export default class DashboardCard extends Component {
 
 }
 
-
-// export default DashboardCard;

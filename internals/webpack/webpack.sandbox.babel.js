@@ -93,7 +93,7 @@ module.exports = (options) => ({
       '.js',
       '.jsx',
       '.react.js',
-      '.ts', '.tsx',
+      '.d.ts', '.ts', '.tsx',
     ],
     mainFields: [
       'browser',

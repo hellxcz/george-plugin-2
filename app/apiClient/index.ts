@@ -1,4 +1,11 @@
 import request from './request';
+import {
+  Category,
+  CategoryDetail,
+  CategoryDetails,
+  Collection,
+  Transaction
+} from './dtos';
 
 let apiUrl: string;
 
@@ -34,14 +41,14 @@ function logJson(json){
   return json;
 }
 
-export function getCategories() {
+export function getCategories(): Promise<Collection<Category>> {
   return get('my/categorization/categories');
 }
 
-export function getCategoryDetails(category) {
+export function getCategoryDetails(category) : Promise<CategoryDetails> {
   return get(`my/categorization/categories/${category}`);
 }
 
-export function getCategoryTransactions(category) {
+export function getCategoryTransactions(category): Promise<Collection<Transaction>> {
   return get(`my/categorization/categories/${category}/transactions`);
 }

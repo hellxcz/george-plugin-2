@@ -1,10 +1,12 @@
-import React, {Component} from 'react';
+import * as React from 'react';
+import { Component } from 'react';
 
 import {getCategoryDetails, getCategoryTransactions} from '../../apiClient';
 
 import DashboardCard from '../../components/dashboardCard';
 
-export default class CategoryTransactionCard extends Component {
+
+export default class CategoryTransactionCard extends Component<any, any> {
   transactionCategory;
 
   constructor(props) {

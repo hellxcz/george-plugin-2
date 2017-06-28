@@ -1,16 +1,18 @@
-import DashboardCard from '../../components/dashboardCard';
+import * as React from 'react';
 
+import DashboardCard from '../../components/dashboardCard';
 
 export default (
 
   () => (
 
       <DashboardCard
+
         header={
           <div>Hello card</div>
         }
 
-        containder={
+        content={
           <div>some body</div>
         }
 
