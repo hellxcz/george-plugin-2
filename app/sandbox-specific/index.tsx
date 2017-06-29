@@ -1,15 +1,19 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import {OverviewBoxModel} from './adapter/overviewCard';
+import { OverviewBoxModel } from './adapter/overviewCard';
 
-import {MenuItemModel} from './adapter/menuItemModel';
+import { MenuItemModel } from './adapter/menuItemModel';
 
-import {init} from '../apiClient';
+import { init } from '../apiClient';
 
-import CategoryTransactionsCard from '../containers/CategoryTransactionsCard';
+import SmartFilterCard from '../containers/SmartFilterCard';
+import SmartFilterDetailScreen from '../containers/SmartFilterDetailScreen';
 
-import {getApiUrl, getAuthorizationHeader} from './adapter/georgeAPI';
+import {
+  getApiUrl,
+  getAuthorizationHeader
+} from './adapter/georgeAPI';
 import * as _ from "underscore";
 
 
@@ -42,7 +46,7 @@ const reactMarionetteWrapper = (rootId, _onShow?) => {
     onShow() {
 
       if (_onShow) {
-         _onShow(rootId);
+        _onShow(rootId);
       }
 
     }
@@ -85,12 +89,12 @@ const addOverviewBoxes = () => {
 
   foodBox.displayView = reactMarionetteWrapper(
     foodBoxId,
-    (rootId) => render(rootId, <CategoryTransactionsCard transactionCategory="FOOD"/>)
+    (rootId) => render(rootId, <SmartFilterCard transactionCategory="FOOD"/>)
   );
 
   withdrawalBox.displayView = reactMarionetteWrapper(
     withdrawalId,
-    (rootId) => render(rootId, <CategoryTransactionsCard transactionCategory="WITHDRAWAL"/>)
+    (rootId) => render(rootId, <SmartFilterCard transactionCategory="WITHDRAWAL"/>)
   );
 
   george.current.overviewBoxes.add(foodBox);
@@ -98,8 +102,8 @@ const addOverviewBoxes = () => {
 
 };
 
-class PluginRouter extends Marionette.AppRouter{
-  onRoute(routeName, routePath, routeArgs){
+class PluginRouter extends Marionette.AppRouter {
+  onRoute(routeName, routePath, routeArgs) {
     george.app.defaultRouteHandler(routeName, routePath, routeArgs);
   }
 }
@@ -132,16 +136,25 @@ export const bootstrap = () => {
 
         new PluginRouter({
           routes: {},
-          appRoutes: {'smartFilter' : "show"},
+          appRoutes: {
+            'smartFilter':'show',
+            'smartFilter/:category': 'show',
+
+          },
           controller: {
 
-            show: () => {
+            show: (category: string) => {
 
               const layoutView = new LayoutView();
 
               george.app.mainContainer.show(layoutView);
 
-              const dummyView = reactMarionetteWrapper('idddd');
+              const _category = !!category ? category : 'WITHDRAWAL';
+
+              const dummyView = reactMarionetteWrapper(
+                'idddd',
+                (rootId) => render(rootId, <SmartFilterDetailScreen transactionCategory={_category}/>)
+              );
 
               layoutView.showContent(new dummyView());
 
