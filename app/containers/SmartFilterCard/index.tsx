@@ -1,5 +1,8 @@
 import * as React from 'react';
-import { Component } from 'react';
+import {
+  Component,
+  CSSProperties
+} from 'react';
 
 import {
   getCategoryDetails
@@ -55,7 +58,9 @@ export default class extends Component<Props, State> {
 
   render() {
 
-
+    const headerStyle: CSSProperties = {
+      display: 'flex'
+    };
     ///<span class="balance true">€ 3.000<span class="cents">,00</span></span>
 
     const href = `#smartFilter/${this.props.transactionCategory}`;
@@ -64,18 +69,20 @@ export default class extends Component<Props, State> {
       <DashboardCard
 
         header={
-          <div>
+          <div style={headerStyle}>
+
+            <div>
+              <svg className="ico-card">
+                <use xlinkHref="#ico-card"></use>
+              </svg>
+            </div>
+
             selected category: {this.props.transactionCategory}
           </div>
         }
 
         content={
-          <div>
-            <a href={href}>Detail</a>
-          </div>
-        }
 
-        footer={
           <div>
 
             Total {
@@ -88,6 +95,13 @@ export default class extends Component<Props, State> {
 
           }
 
+          </div>
+
+        }
+
+        footer={
+          <div>
+            <a href={href}>Detail</a>
           </div>
         }
       />
