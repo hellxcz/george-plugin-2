@@ -1,100 +1,65 @@
 import * as React from 'react';
-import { Component } from 'react';
+
+import SmartFilterDetailScreenContent from '../../containers/SmartFilterDetailScreenContent';
 import {
-  getCategoryDetails,
-  getCategoryTransactions
-} from '../../apiClient/index';
+  PluginRouter,
+  AppRoutes,
+  Controller
+} from '../../sandbox-specific/adapter/backboneHelpers/pluginRouter';
 import {
-  CategoryDetails,
-  Transaction
-} from "../../apiClient/dtos";
+  AreaMainLayoutView,
+  MenuItem
+} from '../../sandbox-specific/areaMainLayout';
+import { reactMarionetteWrapper } from '../../sandbox-specific/adapter/backboneHelpers/reactMarionetteWrapper';
+import { render } from '../../sandbox-specific/adapter/reactHelpers/index';
 
-export interface State {
+export const routeName = 'smartFilter';
 
-  data :{
-    categoryDetails: CategoryDetails,
+const controller: Controller = {
+  show: (category: string) => {
 
-    transactions: Transaction[]
-  }
-
-}
-
-export interface Props {
-  transactionCategory: string;
-}
-
-export default class extends Component<Props, State>{
-
-  constructor(props) {
-
-    super(props);
-
-    this.state =
+    const menuItems : MenuItem[] = [
       {
-        data: {
-
-          categoryDetails: {},
-
-          transactions: []
-        }
-      };
-
-    getCategoryDetails(props.transactionCategory)
-      .then(categoryDetails => {
-
-        this.setState((prevState: State, props) => {
-
-          return { ...prevState }.data.categoryDetails = categoryDetails;
-
-        })
-
-      });
-
-
-    getCategoryTransactions(props.transactionCategory)
-      .then(transactions => {
-        this.setState((prevState, props) => {
-
-          return { ...prevState }.data.transactions = transactions.collection;
-
-        })
-      });
-
-
-  }
-
-  render() {
-
-    const getImg = (item) => {
-
-      if (item.logo.id) {
-        return <img src={item.logo.uri}/>
-      } else {
-
-        const className = item.logo.uri.split(':')[1];
-
-
-        return (<svg className={className}>
-
-          <use xlinkHref={'#' + className}></use>
-
-        </svg>);
-
+        id: "WITHDRAWAL",
+        nameKey: "Withdrawal",
+        url: `#${routeName}/WITHDRAWAL`,
+        icon: "list"
+      },
+      {
+        id: "functions",
+        nameKey: 'Food',
+        url: `#${routeName}/FOOD`,
+        icon: "card"
       }
+    ];
 
-    };
+    const layoutView = new AreaMainLayoutView(menuItems);
 
-    return (
+    layoutView.show();
 
-      <div>{
-        this.state.data.transactions.map((item) => {
-          return <div> {getImg(item)} {item.amount.value} </div>;
-        })
-      }
-      </div>
+    const _category = !!category ? category : 'WITHDRAWAL';
 
-    )
+    const contentView = reactMarionetteWrapper(
+      `content_${_category}`,
+      (rootId) => render(rootId, <SmartFilterDetailScreenContent transactionCategory={_category}/>)
+    );
 
+    layoutView.showContent(new contentView());
   }
+};
+
+export default () => {
+
+  const appRoutes : AppRoutes = {};
+
+  appRoutes[routeName] = 'show';
+  appRoutes[`${routeName}/:category`] = 'show';
+
+  return new PluginRouter({
+    routes: {},
+    appRoutes: appRoutes,
+    controller: controller
+  });
 
 }
+

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+
 
 import { OverviewBoxModel } from './adapter/overviewCard';
 
@@ -7,69 +7,46 @@ import { MenuItemModel } from './adapter/menuItemModel';
 
 import { init } from '../apiClient';
 
-import SmartFilterCard from '../containers/SmartFilterCard';
 import SmartFilterDetailScreen from '../containers/SmartFilterDetailScreen';
+
+import SmartFilterCard from '../containers/SmartFilterCard';
+
 
 import {
   getApiUrl,
   getAuthorizationHeader
 } from './adapter/georgeAPI';
-import * as _ from "underscore";
 
 
-const render = (elementId, reactElement) => {
+import { reactMarionetteWrapper } from './adapter/backboneHelpers/reactMarionetteWrapper';
+import { render } from './adapter/reactHelpers/index';
 
-  ReactDOM.render(
-    reactElement,
-    document.getElementById(elementId)
-  );
 
-};
 
-const pluginName = 'plugins.cz-smart-filter';
 
-const routeName = 'smartFilter';
+export const pluginName = 'plugins.cz-smart-filter';
 
 const foodBoxId = 'cz-smart-filter-overview-food-root';
 
 const withdrawalId = 'cz-smart-filter-overview-withdrawal-root';
 
-const reactMarionetteWrapper = (rootId, _onShow?) => {
 
-  return class extends Marionette.LayoutView<any> {
-
-
-    getTemplate() {
-      return _.template(`<div id="${rootId}"></div>`);
-    }
-
-    onShow() {
-
-      if (_onShow) {
-        _onShow(rootId);
-      }
-
-    }
-
-  }
-};
-
-const registerMenuItem = () => {
-
-  george.app.vent.on("accounts:syncedMenuItems", () => {
-
-    const menuItem = new MenuItemModel({
-      id: 'OTHER-' + pluginName,
-      mainItemId: 'OTHER',
-      url: '#' + routeName,
-      icon: 'hand-coins'
-    });
-
-    george.current.menuItems.add(menuItem);
-
-  });
-
-};
+// const registerMenuItem = () => {
+//
+//   george.app.vent.on("accounts:syncedMenuItems", () => {
+//
+//     const menuItem = new MenuItemModel({
+//       id: 'OTHER-' + pluginName,
+//       mainItemId: 'OTHER',
+//       url: '#' + routeName,
+//       icon: 'hand-coins'
+//     });
+//
+//     george.current.menuItems.add(menuItem);
+//
+//   });
+//
+// };
 
 const addOverviewBoxes = () => {
 
@@ -102,13 +79,7 @@ const addOverviewBoxes = () => {
 
 };
 
-class PluginRouter extends Marionette.AppRouter {
-  onRoute(routeName, routePath, routeArgs) {
-    george.app.defaultRouteHandler(routeName, routePath, routeArgs);
-  }
-}
-
-export const bootstrap = () => {
+export default () => {
 
   george.app.module(pluginName, {
     define: function (testApp) {
@@ -125,43 +96,9 @@ export const bootstrap = () => {
 
         addOverviewBoxes();
 
-        registerMenuItem();
+        // registerMenuItem();
 
-        const LayoutView = george.app.baseViews.areaMainLayoutBase.extend({
-          initialize: () => {
-            //Calling Base Initialize
-            george.app.baseViews.areaMainLayoutBase.prototype.initialize.call(this);
-          }
-        });
-
-        new PluginRouter({
-          routes: {},
-          appRoutes: {
-            'smartFilter':'show',
-            'smartFilter/:category': 'show',
-
-          },
-          controller: {
-
-            show: (category: string) => {
-
-              const layoutView = new LayoutView();
-
-              george.app.mainContainer.show(layoutView);
-
-              const _category = !!category ? category : 'WITHDRAWAL';
-
-              const dummyView = reactMarionetteWrapper(
-                'idddd',
-                (rootId) => render(rootId, <SmartFilterDetailScreen transactionCategory={_category}/>)
-              );
-
-              layoutView.showContent(new dummyView());
-
-            }
-
-          }
-        });
+        SmartFilterDetailScreen();
 
       });
 

@@ -1,3 +1,3 @@
-import {bootstrap} from './sandbox-specific';
+import bootstrap from './sandbox-specific';
 
 bootstrap();
