@@ -1,8 +1,9 @@
-
 export = George;
 export as namespace george;
 
 declare namespace George {
+  import Charts = George.charts.Charts;
+  import Features = George.features.Features;
   export interface TestApp {
 
   }
@@ -11,7 +12,7 @@ declare namespace George {
     define: (app: TestApp) => void;
   }
 
-  namespace Charts {
+  namespace charts {
 
     export enum ChartType {
       PIE,
@@ -26,9 +27,9 @@ declare namespace George {
 
     }
 
-    export interface ChartsInitializer {
-      container: Element; // must be id !!! '#idOfElement'
-      data: any;
+    export interface ChartsInitializer<TData> {
+      container: Element;
+      data: TData;
       onClickHandler?: (data: any, index: number) => void;
       tooltipHandler?: (data: any, max: number) => void;
       cssClass?: string;
@@ -38,7 +39,7 @@ declare namespace George {
 
     }
 
-    export interface PieChartInitializer extends ChartsInitializer {
+    export interface PieChartInitializer extends ChartsInitializer<any> {
 
       disabledCategories?: [string];
       disabledColor?: string;
@@ -55,13 +56,13 @@ declare namespace George {
 
     }
 
-    export interface BarChartInitializer extends ChartsInitializer {
+    export interface BarChartInitializer extends ChartsInitializer<any> {
       barHeight?: number;
       barSpace?: number;
       totalAmount?: number;
     }
 
-    export interface CashFlowChartInitializer extends ChartsInitializer {
+    export interface CashFlowChartInitializer extends ChartsInitializer<any> {
 
       statTypes?: string[];
       color?: any; /// TODO
@@ -73,7 +74,13 @@ declare namespace George {
       margin?: Margin;
     }
 
-    export interface LineChartInitializer extends ChartsInitializer {
+    export interface LineChartData {
+      x: string;
+      y: number;
+      count: number;
+    }
+
+    export interface LineChartInitializer extends ChartsInitializer<LineChartData[][]> {
 
       colors : string[];
       xAxisFormatter?(data: any): string;
@@ -83,7 +90,7 @@ declare namespace George {
 
     }
 
-    export interface AreaChartInitializer extends ChartsInitializer {
+    export interface AreaChartInitializer extends ChartsInitializer<any> {
 
       xAxisFormatter(data: any): string;
       margin?: Margin;
@@ -109,11 +116,25 @@ declare namespace George {
 
   }
 
+  namespace features {
+    export interface BaseFeatures {
+
+      decimalSeperator: string;
+      thousandSeperator: string;
+    }
+
+    export interface Features {
+
+      base: BaseFeatures;
+
+    }
+  }
+
   export interface App {
 
     vent: any;
 
-    module: (name: String, define: Define) => void;
+    module(name: String, define: Define) : void;
 
     addInitializer(cb: () => void): void;
 
@@ -123,7 +144,7 @@ declare namespace George {
 
     mainContainer: any;
 
-    charts: Charts.Charts;
+    charts: Charts;
   }
 
   export interface Current {
@@ -140,18 +161,6 @@ declare namespace George {
   export interface Config {
 
     georgeApiUrl: string;
-  }
-
-  export interface BaseFeatures {
-
-    decimalSeperator: string;
-    thousandSeperator: string;
-  }
-
-  export interface Features {
-
-    base: BaseFeatures;
-
   }
 
   export interface Ui {

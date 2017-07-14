@@ -1,3 +1,4 @@
+import { Balance } from '../components/Balance/index';
 export interface Category {
 
 }
@@ -90,7 +91,7 @@ export interface Transaction {
   partnerData? : null,
   logo : Logo,
   owner : string;//"000000002333",
-  balance? : null,
+  balance? : Balance,
   txType : string;//"PREPAIDCARD",
   txDirection : string;//"OUTGOING",
   cardInfo? : null,
