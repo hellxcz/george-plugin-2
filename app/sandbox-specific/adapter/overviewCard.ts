@@ -14,6 +14,16 @@ export interface IOverviewBoxModel {
   name: string;
   expanded?: boolean; //in case of table overview and group type
   type: string;
+  displayModel: DisplayModel;
+}
+
+
+
+export class DisplayModel extends TypedModel<any> {
+  defaults() {
+    return {};
+  }
+
 }
 
 export class OverviewBoxModel extends TypedModel<IOverviewBoxModel> {
@@ -29,7 +39,8 @@ export class OverviewBoxModel extends TypedModel<IOverviewBoxModel> {
       temporary: false,
       name: '',
       expanded: true, //in case of table overview and group type
-      type: ''
+      type: '',
+      displayModel: new DisplayModel()
     };
   }
 

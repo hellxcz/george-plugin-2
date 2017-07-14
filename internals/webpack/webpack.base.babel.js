@@ -22,6 +22,17 @@ module.exports = (options) => ({
       {test: /\.tsx?$/, loader: "awesome-typescript-loader"},
 
       {
+        test: /\.less$/,
+        use: [{
+          loader: "style-loader" // creates style nodes from JS strings
+        }, {
+          loader: "css-loader" // translates CSS into CommonJS
+        }, {
+          loader: "less-loader" // compiles Less to CSS
+        }]
+      },
+
+      {
         // Do not transform vendor's CSS with CSS-modules
         // The point is that they remain in global scope.
         // Since we require these CSS files in our JS or CSS files,

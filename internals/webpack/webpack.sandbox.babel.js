@@ -7,6 +7,13 @@ const OfflinePlugin = require('offline-plugin');
 
 var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+const extractLess = new ExtractTextPlugin({
+  filename: "./css/plugin.css",
+  // disable: process.env.NODE_ENV === "development"
+});
+
 module.exports = (options) => ({
   // In production, we skip all hot-reloading stuff
   entry: [
@@ -25,7 +32,8 @@ module.exports = (options) => ({
     'babel-polyfill': 'window',
     jquery: '$',
     backbone: 'Backbone',
-    underscore: '_'
+    underscore: '_',
+    moment: 'moment'
   },
 
   module: {
@@ -41,6 +49,21 @@ module.exports = (options) => ({
 
       {test: /\.tsx?$/, loader: "awesome-typescript-loader"},
 
+
+      {
+        test: /\.less$/,
+
+        use: extractLess.extract({
+          use: [{
+            loader: "css-loader"
+          }, {
+            loader: "less-loader"
+          }],
+          // use style-loader in development
+          fallback: "style-loader"
+        })
+      },
+
       {
         // Do not transform vendor's CSS with CSS-modules
         // The point is that they remain in global scope.
@@ -50,7 +73,9 @@ module.exports = (options) => ({
         test: /\.css$/,
         include: /node_modules/,
         loaders: ['style-loader', 'css-loader'],
-      }, {
+      },
+
+      {
         test: /\.(eot|svg|ttf|woff|woff2)$/,
         loader: 'file-loader',
       }, {
@@ -94,6 +119,7 @@ module.exports = (options) => ({
       '.jsx',
       '.react.js',
       '.d.ts', '.ts', '.tsx',
+      '.less'
     ],
     mainFields: [
       'browser',
@@ -106,7 +132,7 @@ module.exports = (options) => ({
     // new BundleAnalyzerPlugin({
     //            analyzerMode: 'static'
     //        }),
-
+    extractLess,
     new webpack.ProvidePlugin({
       // make fetch available
       fetch: 'exports-loader?self.fetch!whatwg-fetch',

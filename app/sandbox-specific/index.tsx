@@ -1,7 +1,11 @@
 import * as React from 'react';
 
+import './styles/george.less';
 
-import { OverviewBoxModel } from './adapter/overviewCard';
+import {
+  DisplayModel,
+  OverviewBoxModel
+} from './adapter/overviewCard';
 
 import { MenuItemModel } from './adapter/menuItemModel';
 
@@ -54,6 +58,7 @@ const addOverviewBoxes = () => {
     id: foodBoxId,
     type: "plugin2",
     name: "plugin2",
+    displayModel: new DisplayModel()
     // position: 2,
     // column: 3
   });
@@ -61,7 +66,8 @@ const addOverviewBoxes = () => {
   const withdrawalBox = new OverviewBoxModel({
     id: withdrawalId,
     type: "plugin2",
-    name: "plugin2"
+    name: "plugin2",
+    displayModel: new DisplayModel()
   });
 
   foodBox.displayView = reactMarionetteWrapper(

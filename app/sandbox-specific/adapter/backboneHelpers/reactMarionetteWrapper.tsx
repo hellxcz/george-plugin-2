@@ -5,7 +5,7 @@ export const reactMarionetteWrapper = (rootId, _onShow?) => {
 
 
     getTemplate() {
-      return _.template(`<div id="${rootId}"></div>`);
+      return _.template(`<div class="plugin-2" id="${rootId}"></div>`);
     }
 
     onShow() {

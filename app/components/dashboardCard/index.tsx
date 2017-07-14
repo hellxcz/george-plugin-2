@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-
 import { CSSProperties } from 'react';
 
 
@@ -17,14 +16,14 @@ export interface Props {
 const Card : React.SFC<Props> = (({header, content, footer}) => (
 
     <div
-      className="overview-block box-saveable box-bottom-btn box-groupable box-canbegrouped box-canbemain box-size-md ui-widget ui-helper-clearfix">
+      className="card overview-block box-saveable box-bottom-btn box-groupable box-canbegrouped box-canbemain box-size-md ui-widget ui-helper-clearfix">
       <div className="displaycard smallbox topbar COLOR_8-bar">
 
         <div className="innerCard" style={innerCardStyle}>
           <div className="displayinner nameblock showNegative">
             <div className="clearfix showNegative">
               <div>
-                <div className="label-sm truncate"> { header } </div>
+                <div className="label-sm truncate header"> { header } </div>
               </div>
             </div>
           </div>
