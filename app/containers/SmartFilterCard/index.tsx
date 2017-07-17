@@ -18,6 +18,7 @@ import {
 } from '../../apiClient/dtos';
 import * as George from '../../types/george/george';
 import LineChartData = George.charts.LineChartData;
+import { Moment } from "moment";
 
 export interface State {
   chartUUID: string,
@@ -39,6 +40,11 @@ interface Balance {
   currency: string,
   precision: number,
   name: string
+}
+
+interface GraphData {
+  date: Moment,
+  value: number
 }
 
 export default class extends Component<Props, State> implements Component {
@@ -80,48 +86,62 @@ export default class extends Component<Props, State> implements Component {
 
         console.log(transactions);
 
-        const grouping : {[key:number]:Transaction[]} = {};
+        const grouping : {[key:number]: GraphData[]} = {};
 
         transactions.collection.forEach(
           item => {
 
-            if (grouping[item.bookingDate] === null){
-              grouping[item.bookingDate] = [];
+            const date = moment(new Date(item.bookingDate));
+            const key = date.format("YYYY-MM"); // we are grouping by month
+
+            if (grouping[key] == null || grouping[key] == undefined){
+              grouping[key] = [];
             }
 
-            const group = grouping[item.bookingDate];
+            const group: GraphData[] = grouping[key];
 
-            group.push(item);
+            group.push({
+              date: date,
+              value: item.amount.value
+            });
 
           }
         );
 
 
+        console.log(grouping);
+
         const graphData = Object.keys(grouping).sort((a, b) => a > b ? 1 : 0)
           .map(key => {
 
-            const group : Transaction[] = grouping[key];
+            const group : GraphData[] = grouping[key];
             let sum = 0;
-
+            let count = 0;
+            let date : Moment = null;
 
             group.forEach((value, index, array) => {
 
-              if (value.balance === null){
-                return;
-              }
+              sum += value.value;
 
-              sum += value.balance!.value;
+              count ++;
+
+              date = value.date;
             });
 
             return {
-              x: moment(new Date(key)).format('YYYY-MM-DD'),
-              y : sum,
-              count : 1
+              x: date.format('YYYY-MM-DD'),
+              y : -sum,
+              count : count
             }
-
           });
 
-        this.renderChart(this.state.chartUUID, [graphData]);
+
+        const last3 = graphData.slice(graphData.length > 4 ? graphData.length - 4 : 0);
+
+        console.log(graphData);
+        console.log(last3);
+
+        this.renderChart(this.state.chartUUID, [last3]);
 
       });
 
@@ -176,7 +196,7 @@ export default class extends Component<Props, State> implements Component {
 
   private renderChart(chartUUID: string, data : LineChartData[][]) {
 
-    const f = (date: number) => moment(new Date(date)).format('YYYY-MM-DD');
+    // const f = (date: number) => moment(new Date(date)).format('YYYY-MM-DD');
 
     const container = document.getElementById(chartUUID);
 
@@ -184,37 +204,34 @@ export default class extends Component<Props, State> implements Component {
       container: container,
       data: data,
 
-      //   [
-      //   [
-      //     {
-      //       x: '2016-06-04',
-      //       y: 100,
-      //       count: 1
-      //     },
-      //     {
-      //       x: '2016-07-04',
-      //       y: 110,
-      //       count: 1
-      //     },
-      //     {
-      //       x: '2016-08-04',
-      //       y: 120,
-      //       count: 1
-      //     },
-      //     {
-      //       x: '2016-08-04',
-      //       y: 130,
-      //       count: 1
-      //     }
-      //   ],
-      //
-      // ],
       colors: [george.ui.colors.RED],
       seriesNames: [
         'one'
       ],
       width: 232,
-      height: 126
+      height: 126,
+      margin: {
+        left: 50,
+        right: 10
+      },
+      xAxisFormatter: (xData: string) => {
+
+        return moment(xData).format('MMM');
+
+
+        // return xData;
+
+
+      },
+      tooltipHandler: (d) => {
+
+        const date = moment(d.point.x).format('MMM');
+
+        const amount = d.point.y;
+
+        return `<span>${date} ${amount}</span>`;
+
+      }
 
     });
 

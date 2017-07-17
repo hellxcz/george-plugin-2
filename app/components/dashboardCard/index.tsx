@@ -4,7 +4,7 @@ import { CSSProperties } from 'react';
 
 
 const innerCardStyle: CSSProperties = {
-  overflow: 'auto'
+  // overflow: 'auto'
 };
 
 export interface Props {

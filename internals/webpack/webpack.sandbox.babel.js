@@ -1,11 +1,14 @@
-// Important modules this config uses
+// const outputPath = 'dist';
+const outputPath = '../georgesandbox-master/sandboxstatic/plugins/testPlugin';
+
+/// / Important modules this config uses
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const OfflinePlugin = require('offline-plugin');
 
 
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
@@ -21,7 +24,7 @@ module.exports = (options) => ({
   ],
 
   output: {
-    path: path.resolve(process.cwd(), 'dist'),
+    path: path.resolve(process.cwd(), outputPath),
     publicPath: '/',
     filename: 'bundle.js',
     libraryTarget: 'var',
@@ -110,7 +113,8 @@ module.exports = (options) => ({
       }],
   },
 
-  devtool: 'inline-source-map',
+  // devtool: 'inline-source-map',
+  devtool: 'source-map',
 
   resolve: {
     modules: ['app', 'node_modules'],

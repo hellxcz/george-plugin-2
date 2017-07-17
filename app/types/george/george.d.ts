@@ -27,11 +27,24 @@ declare namespace George {
 
     }
 
+    export interface ChartData {
+
+      index: number;
+      point : {
+        count: number,
+        x: string,
+        y: number
+      },
+
+      seriesName: string
+
+    }
+
     export interface ChartsInitializer<TData> {
       container: Element;
       data: TData;
       onClickHandler?: (data: any, index: number) => void;
-      tooltipHandler?: (data: any, max: number) => void;
+      tooltipHandler?: (data: ChartData, max: number) => void;
       cssClass?: string;
 
       height: number;
@@ -75,7 +88,7 @@ declare namespace George {
     }
 
     export interface LineChartData {
-      x: string;
+      x: string; // date in ('YYYY-MM-DD')
       y: number;
       count: number;
     }
@@ -83,7 +96,7 @@ declare namespace George {
     export interface LineChartInitializer extends ChartsInitializer<LineChartData[][]> {
 
       colors : string[];
-      xAxisFormatter?(data: any): string;
+      xAxisFormatter : any;
       seriesNames?: string[];
       tickValues?: any;
       margin?: Margin;
