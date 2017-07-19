@@ -1,8 +1,11 @@
 import * as React from 'react';
 import { Component } from 'react';
+import * as moment from 'moment';
+
 import {
   getCategoryDetails,
-  getCategoryTransactions
+  getCategoryTransactions,
+  getCategoryTransactionsByDate
 } from '../../apiClient/index';
 import {
   CategoryDetails,
@@ -10,6 +13,8 @@ import {
 } from "../../apiClient/dtos";
 
 import TransactionItem from '../../components/TransactionItem';
+import Transactions from '../../components/Transactions';
+
 
 export interface State {
 
@@ -53,7 +58,8 @@ export default class extends Component<Props, State>{
       });
 
 
-    getCategoryTransactions(props.transactionCategory)
+    getCategoryTransactionsByDate(props.transactionCategory, moment('2013-03-01'), moment('2018-08-01'))
+    // getCategoryTransactions(props.transactionCategory)
       .then(transactions => {
         this.setState((prevState, props) => {
 
@@ -70,12 +76,7 @@ export default class extends Component<Props, State>{
     const transactions = this.state.data.transactions;
     return (
 
-      <div>{
-         transactions.map(transaction => {
-          return <TransactionItem transaction={transaction}/>
-        })
-      }
-      </div>
+      <Transactions transactions={transactions}/>
 
     )
 

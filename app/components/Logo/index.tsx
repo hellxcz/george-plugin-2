@@ -25,7 +25,7 @@ const getLogo = (logo: Logo) => {
 };
 
 const sfc: React.SFC<Props> = (
-  ({ logo }) =>  getLogo(logo)
+  ({ logo }) => getLogo(logo)
 );
 
 export default sfc;

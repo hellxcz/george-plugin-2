@@ -149,6 +149,12 @@ export default class extends Component<Props, State> implements Component {
 
   private getBalances(): Balance[] {
 
+    const categoryDetails = this.state.data.categoryDetails;
+
+    if (!categoryDetails){
+      return [];
+    }
+
     return Object.keys(this.state.data.categoryDetails).map(key => {
       const item = this.state.data.categoryDetails[key];
 
@@ -199,6 +205,8 @@ export default class extends Component<Props, State> implements Component {
     // const f = (date: number) => moment(new Date(date)).format('YYYY-MM-DD');
 
     const container = document.getElementById(chartUUID);
+
+    // try areaChart as is on overviewMainAccountBox.js
 
     const chart = george.app.charts.lineChart({
       container: container,

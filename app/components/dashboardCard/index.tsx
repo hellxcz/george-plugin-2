@@ -13,7 +13,7 @@ export interface Props {
   footer: JSX.Element;
 }
 
-const Card : React.SFC<Props> = (({header, content, footer}) => (
+const Card : React.SFC<Props> = ({header, content, footer}) => (
 
     <div
       className="card overview-block box-saveable box-bottom-btn box-groupable box-canbegrouped box-canbemain box-size-md ui-widget ui-helper-clearfix">
@@ -42,8 +42,6 @@ const Card : React.SFC<Props> = (({header, content, footer}) => (
 
       </div>
     </div>
-
-  )
 
 );
 
