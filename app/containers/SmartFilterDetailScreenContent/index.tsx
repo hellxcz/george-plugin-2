@@ -3,22 +3,23 @@ import { Component } from 'react';
 import * as moment from 'moment';
 
 import {
+  getAccounts,
   getCategoryDetails,
-  getCategoryTransactions,
   getCategoryTransactionsByDate
 } from '../../apiClient/index';
 import {
+  Account,
   CategoryDetails,
   Transaction
 } from "../../apiClient/dtos";
-
-import TransactionItem from '../../components/TransactionItem';
 import Transactions from '../../components/Transactions';
 
 
 export interface State {
 
-  data :{
+  data: {
+
+    accounts: Map<String, Account>, // {[id: string]: Account},
     categoryDetails: CategoryDetails,
 
     transactions: Transaction[]
@@ -30,7 +31,7 @@ export interface Props {
   transactionCategory: string;
 }
 
-export default class extends Component<Props, State>{
+export default class extends Component<Props, State> {
 
   constructor(props) {
 
@@ -39,44 +40,61 @@ export default class extends Component<Props, State>{
     this.state =
       {
         data: {
-
+          accounts: new Map(),
           categoryDetails: {},
-
           transactions: []
         }
       };
 
-    getCategoryDetails(props.transactionCategory)
-      .then(categoryDetails => {
+    const categoryDetailsPromise = getCategoryDetails(props.transactionCategory);
 
-        this.setState((prevState: State, props) => {
+    const transactionsPromise = getCategoryTransactionsByDate(props.transactionCategory, moment('2013-03-01'), moment('2018-08-01'));
 
-          return { ...prevState }.data.categoryDetails = categoryDetails;
+    const accountsPromise = getAccounts();
+
+    Promise.all([categoryDetailsPromise, transactionsPromise, accountsPromise])
+      .then(([categoryDetails, transactions, accounts]) => {
+
+        const accountsMap =
+          accounts.collection
+            .map<[string, Account]>(account => [account.transactionAccountId, account]);
+
+        return this.setState((prevState: State, props) => {
+
+          const newState = { ...prevState };
+
+          newState.data = {
+            accounts: new Map(accountsMap),
+            transactions: transactions.collection,
+            categoryDetails: categoryDetails
+          };
+
+          return newState;
 
         })
 
       });
-
-
-    getCategoryTransactionsByDate(props.transactionCategory, moment('2013-03-01'), moment('2018-08-01'))
-    // getCategoryTransactions(props.transactionCategory)
-      .then(transactions => {
-        this.setState((prevState, props) => {
-
-          return { ...prevState }.data.transactions = transactions.collection;
-
-        })
-      });
-
 
   }
 
   render() {
 
-    const transactions = this.state.data.transactions;
+    const data = this.state.data;
+    const transactions = data.transactions;
+    const accountsMap = data.accounts;
+
+
+    transactions.forEach(transaction => {
+
+      if (!accountsMap.has(transaction.owner)){
+        console.log('could not find !!!');
+      }
+
+    });
+
     return (
 
-      <Transactions transactions={transactions}/>
+      <Transactions transactions={transactions} accountsMap={accountsMap}/>
 
     )
 

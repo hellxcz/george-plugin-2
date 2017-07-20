@@ -1,4 +1,100 @@
-import { Balance } from '../components/Balance/index';
+
+export interface Account {
+  id: string,
+  transactionAccountId: string,
+  accountno: {
+    iban: string,
+    bic: string,
+    number: string,
+    bankCode: string,
+    prefix: string,
+    countryCode: string
+  },
+  currency: string,
+  alias: string,
+  description: string,
+  balance: {
+    value: number,
+    precision: number,
+    currency: string
+  },
+  disposable: {
+    value: number,
+    precision: number,
+    currency: string
+  },
+  overdraft: {
+    value: number,
+    precision: number,
+    currency: string
+  },
+  type: string,
+  typeI18N: string,
+  productI18N: string,
+  productId: string,
+  productType: string,
+  productSubType: string,
+  flags: [
+    string
+    ],
+  nextRateAmount: {
+    value: number,
+    precision: number,
+    currency: string
+  },
+  nextRateType: string,
+  nextRateDate: string, // '2017-07-14T09:30:41.976Z',
+  userId: string,
+  card: {
+    id: string,
+    alias: string,
+    owner: string,
+    number: string,
+    product: string,
+    productI18N: string,
+    balance: {
+      value: number,
+      precision: number,
+      currency: string
+    },
+    limit: {
+      value: number,
+      precision: number,
+      currency: string
+    },
+    directDebitAccount: {
+      iban: string,
+      bic: string,
+      number: string,
+      bankCode: string,
+      prefix: string,
+      countryCode: string
+    },
+    minimalMonthlyAmount: {
+      value: number,
+      precision: number,
+      currency: string
+    },
+    repaymentRate: string,
+    type: string,
+    provider: string,
+    characteristic: string,
+    flags: [
+      string
+      ],
+    _shadowAccountId: string
+  },
+  additionalData: {
+    color: string, //'COLOR_1',
+    position: number,
+    hidden: false,
+    colorCode: string
+  },
+  plugin: string, //'CUSTOMER_SAFE',
+  hasImage: false
+}
+
+
 export interface Category {
 
 }
@@ -28,6 +124,13 @@ export interface Logo {
   id: number;
   uri: string;
 
+}
+
+export interface Balance {
+
+  value: number,
+  currency: string,
+  precision: number
 }
 
 export interface Transaction {

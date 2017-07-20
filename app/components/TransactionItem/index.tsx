@@ -1,15 +1,21 @@
 import * as React from 'react';
 import * as moment from 'moment';
 
-import { Transaction } from '../../apiClient/dtos';
-import Logo from '../Logo';
+import {
+  CategoryDetails,
+  Account,
+  Transaction
+} from '../../apiClient/dtos';
 
 import Balance from '../Balance';
+import LogoDiv from '../LogoDiv/index';
 
 
 export interface Props {
 
-  transaction: Transaction
+  transaction: Transaction;
+
+  account: Account;
 
 }
 
@@ -54,11 +60,27 @@ const getDate = (date: number): JSX.Element => {
 
 };
 
-export const TransactionItem: React.SFC<Props> = ({ transaction }) => {
+
+/*
+*
+
+<td class="iconcol clickCell">
+<div class="spacer">
+
+    <div class="icondiv iconcircle notinprint" style="background-size:contain !important;background-position:center center !important;background-image:url(https://george.fat.sparkasse.at/img/logos/logo_886_64.png)">
+
+        </div>
+
+<div class="miniDate visible-xs notinprint">30.6.17</div></div></td>
+
+
+* */
+
+export const TransactionItem: React.SFC<Props> = ({ transaction, account }) => {
 
   return (
 
-    <tr className="transaction-line clickable outgoing">
+    <tr className="transaction-line outgoing">
 
       <td className="datecol clickCell">
 
@@ -73,13 +95,8 @@ export const TransactionItem: React.SFC<Props> = ({ transaction }) => {
 
         <div className="spacer">
 
-          <Logo logo={transaction.logo}/>
 
-          {/*<div className="icondiv iconcircle notinprint"*/}
-          {/*style="background-size:contain !important;background-position:center center !important;background-image:url(https://george.fat.sparkasse.at/img/logos/logo_1757951_64.png)">*/}
-
-          {/*</div>*/}
-
+          <LogoDiv logo={transaction.logo}/>
 
           <div className="miniDate visible-xs notinprint">
             30.6.17
@@ -94,6 +111,7 @@ export const TransactionItem: React.SFC<Props> = ({ transaction }) => {
           <h5 className="obfuscate">{transaction.title}</h5>
           <div className="clearfix thin">
 
+            {account.alias} : {account.card.alias} : {account.card.number}
 
             <div className="pull-left activeStar hide">
               <svg className="ic-sm ico-star ic-line">
