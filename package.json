@@ -44,6 +44,8 @@
     "test:clean": "rimraf ./coverage",
     "test": "cross-env NODE_ENV=test jest --coverage",
     "test:watch": "cross-env NODE_ENV=test jest --watchAll",
+    "kill-selenium": "kill -15 $( lsof -i:4444 -t )",
+    "test:e2e": "./node_modules/.bin/wdio ./internals/testing/wdio.conf.js",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "lint-staged": {
@@ -185,9 +187,9 @@
   },
   "jest": {
     "collectCoverageFrom": [
-      "app/**/*.{js,jsx}",
-      "!app/**/*.test.{js,jsx}",
-      "!app/*/RbGenerated*/*.{js,jsx}",
+      "app/**/*.{js,jsx,tsx}",
+      "!app/**/*.test.{js,jsx,tsx}",
+      "!app/*/RbGenerated*/*.{js,jsx,tsx}",
       "!app/app.js",
       "!app/routes.js"
     ],
@@ -203,15 +205,24 @@
       "node_modules",
       "app"
     ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx"
+    ],
     "moduleNameMapper": {
       ".*\\.(css|less|styl|scss|sass)$": "<rootDir>/internals/mocks/cssModule.js",
       ".*\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/internals/mocks/image.js"
     },
     "setupTestFrameworkScriptFile": "<rootDir>/internals/testing/test-bundler.js",
-    "testRegex": "tests/.*\\.test\\.js$"
+    "testRegex": "(<rootDir>/app/tests/.*|(\\.|/)test)\\.(ts|tsx|js|jsx)?$"
   },
   "dependencies": {
-    "@types/jquery": "2.0.47",
     "@types/moment": "^2.13.0",
     "@types/react": "^15.0.32",
     "@types/react-dom": "^15.5.1",
@@ -246,10 +257,15 @@
     "whatwg-fetch": "2.0.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.0.1",
+    "@types/jest": "^20.0.4",
+    "@types/react-test-renderer": "^15.5.2",
+    "@types/webdriverio": "^4.8.2",
     "awesome-typescript-loader": "^3.1.3",
     "babel-cli": "6.18.0",
     "babel-core": "6.21.0",
     "babel-eslint": "7.1.1",
+    "babel-jest": "^20.0.3",
     "babel-loader": "6.2.10",
     "babel-plugin-dynamic-import-node": "1.0.0",
     "babel-plugin-react-intl": "2.2.0",
@@ -262,6 +278,7 @@
     "babel-preset-react": "6.16.0",
     "babel-preset-react-hmre": "1.1.1",
     "babel-preset-stage-0": "6.16.0",
+    "chai": "^4.1.0",
     "cheerio": "0.22.0",
     "circular-dependency-plugin": "2.0.0",
     "coveralls": "2.11.15",
@@ -283,6 +300,7 @@
     "html-webpack-plugin": "2.24.1",
     "image-webpack-loader": "2.0.0",
     "imports-loader": "0.6.5",
+    "jest": "^20.0.4",
     "jest-cli": "18.0.0",
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
@@ -295,13 +313,24 @@
     "plop": "1.7.3",
     "pre-commit": "1.1.3",
     "react-addons-test-utils": "15.4.1",
+    "react-test-renderer": "^15.6.1",
+    "regenerator-runtime": "^0.10.5",
     "rimraf": "2.5.4",
+    "selenium-standalone": "^6.5.0",
+    "selenium-webdriver": "^3.5.0",
     "shelljs": "0.7.5",
     "sinon": "2.0.0-pre",
     "source-map-loader": "^0.2.1",
     "style-loader": "0.13.1",
+    "ts-jest": "^20.0.7",
+    "ts-node": "^3.2.1",
     "typescript": "^2.3.4",
     "url-loader": "0.5.7",
+    "wdio-mocha-framework": "^0.5.10",
+    "wdio-selenium-standalone-service": "0.0.9",
+    "wdio-spec-reporter": "^0.1.0",
+    "wdio-typescript-service": "0.0.3",
+    "webdriverio": "^4.8.0",
     "webpack": "2.2.0-rc.3",
     "webpack-bundle-analyzer": "^2.8.2",
     "webpack-dev-middleware": "1.9.0",

@@ -24,15 +24,12 @@ import {
 
 import { reactMarionetteWrapper } from './adapter/backboneHelpers/reactMarionetteWrapper';
 import { render } from './adapter/reactHelpers/index';
+import {
+  foodBoxId,
+  pluginName,
+  withdrawalId
+} from './constants';
 
-
-
-
-export const pluginName = 'plugins.cz-smart-filter';
-
-const foodBoxId = 'cz-smart-filter-overview-food-root';
-
-const withdrawalId = 'cz-smart-filter-overview-withdrawal-root';
 
 
 // const registerMenuItem = () => {

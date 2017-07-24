@@ -83,15 +83,6 @@ export default class extends Component<Props, State> {
     const transactions = data.transactions;
     const accountsMap = data.accounts;
 
-
-    transactions.forEach(transaction => {
-
-      if (!accountsMap.has(transaction.owner)){
-        console.log('could not find !!!');
-      }
-
-    });
-
     return (
 
       <Transactions transactions={transactions} accountsMap={accountsMap}/>

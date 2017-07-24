@@ -14,6 +14,7 @@ import DashboardCard from '../../components/dashboardCard';
 import Balance from '../../components/Balance';
 import {
   CategoryDetails,
+  Collection,
   Transaction
 } from '../../apiClient/dtos';
 import * as George from '../../types/george/george';
@@ -64,86 +65,89 @@ export default class extends Component<Props, State> implements Component {
         }
       };
 
-    getCategoryDetails(props.transactionCategory)
-      .then(categoryDetails => {
+    const getCategoryDetailsPromise = getCategoryDetails(props.transactionCategory);
 
-        this.setState((prevState: State, props) => {
+    const getCategoryTransactionsPromise = getCategoryTransactionsByDate(props.transactionCategory, moment('2013-03-01'), moment('2018-08-01'));
 
-          return { ...prevState }.data.categoryDetails = categoryDetails;
+    Promise.all([getCategoryDetailsPromise, getCategoryTransactionsPromise])
+      .then(([categoryDetails, categoryTransactions]) => {
+        this.processCategoryDetails(categoryDetails);
+        this.processCategoryTransactions(categoryTransactions);
 
-        })
+      })
 
-      }).then(() => {
+  }
 
-        const state = this.state;
+  private processCategoryTransactions(transactions: Collection<Transaction>){
 
-        // this.renderChart(this.state.chartUUID);
+      console.log(transactions);
 
-    });
+      const grouping : {[key:number]: GraphData[]} = {};
 
-    getCategoryTransactionsByDate(props.transactionCategory, moment('2013-03-01'), moment('2018-08-01'))
-      .then(transactions => {
+      transactions.collection.forEach(
+        item => {
 
-        console.log(transactions);
+          const date = moment(new Date(item.bookingDate));
+          const key = date.format("YYYY-MM"); // we are grouping by month
 
-        const grouping : {[key:number]: GraphData[]} = {};
-
-        transactions.collection.forEach(
-          item => {
-
-            const date = moment(new Date(item.bookingDate));
-            const key = date.format("YYYY-MM"); // we are grouping by month
-
-            if (grouping[key] == null || grouping[key] == undefined){
-              grouping[key] = [];
-            }
-
-            const group: GraphData[] = grouping[key];
-
-            group.push({
-              date: date,
-              value: item.amount.value
-            });
-
+          if (grouping[key] == null || grouping[key] == undefined){
+            grouping[key] = [];
           }
-        );
 
+          const group: GraphData[] = grouping[key];
 
-        console.log(grouping);
-
-        const graphData = Object.keys(grouping).sort((a, b) => a > b ? 1 : 0)
-          .map(key => {
-
-            const group : GraphData[] = grouping[key];
-            let sum = 0;
-            let count = 0;
-            let date : Moment = null;
-
-            group.forEach((value, index, array) => {
-
-              sum += value.value;
-
-              count ++;
-
-              date = value.date;
-            });
-
-            return {
-              x: date.format('YYYY-MM-DD'),
-              y : -sum,
-              count : count
-            }
+          group.push({
+            date: date,
+            value: item.amount.value
           });
 
+        }
+      );
 
-        const last3 = graphData.slice(graphData.length > 4 ? graphData.length - 4 : 0);
+      console.log(grouping);
 
-        console.log(graphData);
-        console.log(last3);
+      const graphData = Object.keys(grouping).sort((a, b) => a > b ? 1 : 0)
+        .map(key => {
 
-        this.renderChart(this.state.chartUUID, [last3]);
+          const group : GraphData[] = grouping[key];
+          let sum = 0;
+          let count = 0;
+          let date : Moment = null;
 
-      });
+          group.forEach((value, index, array) => {
+
+            sum += value.value;
+
+            count ++;
+
+            date = value.date;
+          });
+
+          return {
+            x: date.format('YYYY-MM-DD'),
+            y : -sum,
+            count : count
+          }
+        });
+
+
+      const last3 = graphData.slice(graphData.length > 4 ? graphData.length - 4 : 0);
+
+      console.log(graphData);
+      console.log(last3);
+
+      this.renderChart(this.state.chartUUID, [last3]);
+
+
+  }
+
+  private processCategoryDetails(categoryDetails: CategoryDetails) {
+
+    this.setState((prevState: State, props) => {
+
+            return { ...prevState }.data.categoryDetails = categoryDetails;
+
+          })
 
   }
 
@@ -202,8 +206,6 @@ export default class extends Component<Props, State> implements Component {
 
   private renderChart(chartUUID: string, data : LineChartData[][]) {
 
-    // const f = (date: number) => moment(new Date(date)).format('YYYY-MM-DD');
-
     const container = document.getElementById(chartUUID);
 
     // try areaChart as is on overviewMainAccountBox.js
@@ -225,10 +227,6 @@ export default class extends Component<Props, State> implements Component {
       xAxisFormatter: (xData: string) => {
 
         return moment(xData).format('MMM');
-
-
-        // return xData;
-
 
       },
       tooltipHandler: (d) => {
@@ -267,6 +265,8 @@ export default class extends Component<Props, State> implements Component {
 
 
     const href = `#smartFilter/${this.props.transactionCategory}`;
+
+    const id = `cz-smart-filter-${this.props.transactionCategory}`;
 
     const totalBalance = this.getTotalBalance();
 
@@ -311,7 +311,7 @@ export default class extends Component<Props, State> implements Component {
 
         footer={
           <div>
-            <a href={href}>Detail</a>
+            <a id={id} className="footer-link" href={href}>Detail</a>
           </div>
         }
       />
