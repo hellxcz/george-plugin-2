@@ -29,10 +29,13 @@ export class AreaMainLayoutView {
 
   }
 
-  public showContent(view : Marionette.LayoutView<any>){
+  public showContent(view : Marionette.LayoutView<any>, subPageId: string){
 
     this._layoutView.showContent(view);
 
+    this._layoutView.lastSubpage = subPageId;
+
+    this._layoutView.renderSubmenu();
   }
 
   public show(){
