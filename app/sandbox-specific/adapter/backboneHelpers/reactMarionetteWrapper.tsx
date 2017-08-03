@@ -1,3 +1,4 @@
+import * as ReactDOM from 'react-dom';
 import * as _ from 'underscore';
 export const reactMarionetteWrapper = (rootId, _onShow?) => {
 
@@ -14,6 +15,10 @@ export const reactMarionetteWrapper = (rootId, _onShow?) => {
         _onShow(rootId);
       }
 
+    }
+
+    onBeforeDestroy(){
+      ReactDOM.unmountComponentAtNode(document.getElementById(rootId)); // TODO: add first child !!!!
     }
 
   }

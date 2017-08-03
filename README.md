@@ -2,6 +2,12 @@
 
 npm install
 
-npm run sandbox-build
+npm run build:sandbox
+- runs copy ./dist/bundle.js to ../georgesandbox-master/sandboxStatic/plugins/testplugin
 
-copy ./dist/bundle.js to georgesandbox/sandboxStatic/plugins/testplugin
+- in first build, you have to manually copy app/sandbox-specific/pluginConfig.json to ../georgesandbox-master/sandboxStatic/plugins/testplugin
+
+npm run test:e2e
+- after build:sandbox, with running sandbox
+
+

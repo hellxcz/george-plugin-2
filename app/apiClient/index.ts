@@ -79,7 +79,7 @@ export function getCategoryDetails(category: string): Promise<CategoryDetails> {
 export function getCategoryTransactions(category: string): Promise<Collection<Transaction>> {
   // return get(`my/categorization/categories/${category}/transactions`);
 
-  return Promise.resolve(transactions);
+  return Promise.resolve(hardcoded_transactions);
 }
 
 export function getCategoryTransactionsByDate(category: string, from: Moment, to: Moment): Promise<Collection<Transaction>> {
@@ -89,12 +89,12 @@ export function getCategoryTransactionsByDate(category: string, from: Moment, to
   // return get(`my/categorization/categories/${category}/transactions?from=${from.format(dateFormat)}&to=${to.format(dateFormat)}`);
 
 
-  return Promise.resolve(transactions);
+  return Promise.resolve(hardcoded_transactions);
 }
 
 const now = moment();
 
-const transactions = {
+export const hardcoded_transactions = {
   "collection": [{
     "id": "CDCE6426D2C3D704",
     "title": "596643  MPLUSM",

@@ -5,6 +5,8 @@
 
 /// <reference path="../jquery/jquery.d.ts" />
 
+// import * as _ from 'underscore';
+
 declare namespace Backbone {
 
   interface AddOptions extends Silenceable {

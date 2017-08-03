@@ -46,7 +46,9 @@ describe('try plugin', () => {
 
       // wait till load
       browser.waitForExist('#pageContainer', 70 * 1000);
-      browser.waitForExist('#accountName', 70 * 1000);
+      browser.waitForVisible('#accountName', 70 * 1000);
+
+      browser.pause(5000);
 
       saveScreenshot();
 
@@ -56,7 +58,10 @@ describe('try plugin', () => {
       // navigate to food transaction page
       food.element(".footer-link").click();
 
-      browser.waitForExist('.transaction-line', 4 * 1000);
+      browser.waitForVisible('.transaction-line', 60 * 1000);
+
+      browser.pause(5000);
+
 
       saveScreenshot();
 
@@ -69,6 +74,8 @@ describe('try plugin', () => {
       expect(withdrawal.isExisting());
 
       // navigate to withdrawal transaction page
+
+      browser.pause(5000);
 
       saveScreenshot();
 

@@ -71,7 +71,8 @@ const sfc: React.SFC<Props> = (
       <span className="cents">
         {george.features.base.decimalSeperator}
         {getCents(props.balance.value)}
-        </span></span>
+        </span>
+    </span>
 );
 
 export default sfc;

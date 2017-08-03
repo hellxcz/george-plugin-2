@@ -20,12 +20,17 @@ import {
 import * as George from '../../types/george/george';
 import LineChartData = George.charts.LineChartData;
 import { Moment } from "moment";
+import {
+  renderCategoryTransactions_usingLineChart,
+  renderCategoryTransactions_usingAreaChart
+} from './chartRenderers';
 
 export interface State {
   chartUUID: string,
   data: {
 
-    categoryDetails: CategoryDetails
+    categoryDetails: CategoryDetails,
+    transactions: Transaction[]
 
   }
 
@@ -43,11 +48,6 @@ interface Balance {
   name: string
 }
 
-interface GraphData {
-  date: Moment,
-  value: number
-}
-
 export default class extends Component<Props, State> implements Component {
 
   constructor(props) {
@@ -60,7 +60,8 @@ export default class extends Component<Props, State> implements Component {
         chartUUID: this.getChartUUID(),
         data: {
 
-          categoryDetails: {}
+          categoryDetails: {},
+          transactions: []
 
         }
       };
@@ -71,73 +72,24 @@ export default class extends Component<Props, State> implements Component {
 
     Promise.all([getCategoryDetailsPromise, getCategoryTransactionsPromise])
       .then(([categoryDetails, categoryTransactions]) => {
-        this.processCategoryDetails(categoryDetails);
-        this.processCategoryTransactions(categoryTransactions);
 
-      })
+        this.setState((prevState: State, props) => {
 
-  }
+          const newOne = { ...prevState };
 
-  private processCategoryTransactions(transactions: Collection<Transaction>){
+          newOne.data = {
+            categoryDetails: categoryDetails,
+            transactions: categoryTransactions.collection
+          };
 
-      console.log(transactions);
+          return newOne;
 
-      const grouping : {[key:number]: GraphData[]} = {};
-
-      transactions.collection.forEach(
-        item => {
-
-          const date = moment(new Date(item.bookingDate));
-          const key = date.format("YYYY-MM"); // we are grouping by month
-
-          if (grouping[key] == null || grouping[key] == undefined){
-            grouping[key] = [];
-          }
-
-          const group: GraphData[] = grouping[key];
-
-          group.push({
-            date: date,
-            value: item.amount.value
-          });
-
-        }
-      );
-
-      console.log(grouping);
-
-      const graphData = Object.keys(grouping).sort((a, b) => a > b ? 1 : 0)
-        .map(key => {
-
-          const group : GraphData[] = grouping[key];
-          let sum = 0;
-          let count = 0;
-          let date : Moment = null;
-
-          group.forEach((value, index, array) => {
-
-            sum += value.value;
-
-            count ++;
-
-            date = value.date;
-          });
-
-          return {
-            x: date.format('YYYY-MM-DD'),
-            y : -sum,
-            count : count
-          }
         });
 
+        // renderCategoryTransactions_usingLineChart(this.state.chartUUID, categoryTransactions);
+        renderCategoryTransactions_usingAreaChart(this.state.chartUUID, categoryTransactions);
 
-      const last3 = graphData.slice(graphData.length > 4 ? graphData.length - 4 : 0);
-
-      console.log(graphData);
-      console.log(last3);
-
-      this.renderChart(this.state.chartUUID, [last3]);
-
+      })
 
   }
 
@@ -145,31 +97,38 @@ export default class extends Component<Props, State> implements Component {
 
     this.setState((prevState: State, props) => {
 
-            return { ...prevState }.data.categoryDetails = categoryDetails;
+      return { ...prevState }.data.categoryDetails = categoryDetails;
 
-          })
+    })
 
   }
 
   private getBalances(): Balance[] {
 
-    const categoryDetails = this.state.data.categoryDetails;
 
-    if (!categoryDetails){
+    const transactions = this.state.data.transactions;
+
+    if (!transactions) {
       return [];
     }
 
-    return Object.keys(this.state.data.categoryDetails).map(key => {
-      const item = this.state.data.categoryDetails[key];
+    const result: Balance = {
+      currency: "",
+      precision: 0,
+      value: 0,
+      name: ""
+    };
 
-      return {
-        value: item.value,
-        currency: item.currency,
-        precision: item.precision,
-        name: key
-      };
-    })
-      ;
+    transactions.forEach(transaction => {
+      const amount = transaction.amount;
+
+      result.value += amount.value;
+      result.precision = amount.precision;
+      result.currency = amount.currency;
+      result.name = "";
+    });
+
+    return [result];
 
   }
 
@@ -202,45 +161,6 @@ export default class extends Component<Props, State> implements Component {
 
   private getChartUUID(): string {
     return 'smartFilterChart_' + _.uniqueId();
-  }
-
-  private renderChart(chartUUID: string, data : LineChartData[][]) {
-
-    const container = document.getElementById(chartUUID);
-
-    // try areaChart as is on overviewMainAccountBox.js
-
-    const chart = george.app.charts.lineChart({
-      container: container,
-      data: data,
-
-      colors: [george.ui.colors.RED],
-      seriesNames: [
-        'one'
-      ],
-      width: 232,
-      height: 126,
-      margin: {
-        left: 50,
-        right: 10
-      },
-      xAxisFormatter: (xData: string) => {
-
-        return moment(xData).format('MMM');
-
-      },
-      tooltipHandler: (d) => {
-
-        const date = moment(d.point.x).format('MMM');
-
-        const amount = d.point.y;
-
-        return `<span>${date} ${amount}</span>`;
-
-      }
-
-    });
-
   }
 
   render() {
@@ -300,13 +220,7 @@ export default class extends Component<Props, State> implements Component {
         }
 
         content={
-
-          <div>
-
-            <div id={this.state.chartUUID}/>
-
-          </div>
-
+          <div id={this.state.chartUUID}/>
         }
 
         footer={

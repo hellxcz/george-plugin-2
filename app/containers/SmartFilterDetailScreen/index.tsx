@@ -12,6 +12,7 @@ import {
 } from '../../sandbox-specific/areaMainLayout';
 import { reactMarionetteWrapper } from '../../sandbox-specific/adapter/backboneHelpers/reactMarionetteWrapper';
 import { render } from '../../sandbox-specific/adapter/reactHelpers/index';
+import { getId } from '../../sandbox-specific/constants';
 
 export const routeName = 'smartFilter';
 
@@ -32,8 +33,6 @@ const menuItems: MenuItem[] = [
   }
 ];
 
-// .map<[string, Account]>(account => [account.transactionAccountId, account])
-
 const menuItemsLookup: Map<string, MenuItem> = new Map(
   menuItems.map<[string, MenuItem]>(value => [value.id, value])
 );
@@ -50,10 +49,10 @@ const controller: Controller = {
 
     if (!menuItemsLookup.has(_category.toUpperCase())){
       _category = defaultMenuItemId;
-    };
+    }
 
     const contentView = reactMarionetteWrapper(
-      `content_${_category}`,
+      getId(`content_${_category}`),
       (rootId) => render(rootId, <SmartFilterDetailScreenContent transactionCategory={_category}/>)
     );
 

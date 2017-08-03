@@ -4,9 +4,15 @@ build
 dist
 node_modules
 stats.json
+errorShots
+
 
 # Cruft
 .DS_Store
 npm-debug.log
 .idea
 george-plugin-2.iml
+app/tests/selenium/_screenshots/
+!app/tests/selenium/_screenshots/.placeholder
+
+cache/

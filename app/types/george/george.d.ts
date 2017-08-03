@@ -27,24 +27,11 @@ declare namespace George {
 
     }
 
-    export interface ChartData {
-
-      index: number;
-      point : {
-        count: number,
-        x: string,
-        y: number
-      },
-
-      seriesName: string
-
-    }
-
-    export interface ChartsInitializer<TData> {
+    export interface ChartsInitializer<TData, TChartData> {
       container: Element;
       data: TData;
       onClickHandler?: (data: any, index: number) => void;
-      tooltipHandler?: (data: ChartData, max: number) => void;
+      tooltipHandler?: (data: TChartData, max: number) => void;
       cssClass?: string;
 
       height: number;
@@ -52,7 +39,7 @@ declare namespace George {
 
     }
 
-    export interface PieChartInitializer extends ChartsInitializer<any> {
+    export interface PieChartInitializer extends ChartsInitializer<any, any> {
 
       disabledCategories?: [string];
       disabledColor?: string;
@@ -69,13 +56,13 @@ declare namespace George {
 
     }
 
-    export interface BarChartInitializer extends ChartsInitializer<any> {
+    export interface BarChartInitializer extends ChartsInitializer<any, any> {
       barHeight?: number;
       barSpace?: number;
       totalAmount?: number;
     }
 
-    export interface CashFlowChartInitializer extends ChartsInitializer<any> {
+    export interface CashFlowChartInitializer extends ChartsInitializer<any, any> {
 
       statTypes?: string[];
       color?: any; /// TODO
@@ -93,7 +80,15 @@ declare namespace George {
       count: number;
     }
 
-    export interface LineChartInitializer extends ChartsInitializer<LineChartData[][]> {
+    export interface RenderedLineChartData {
+
+      index: number;
+      point : LineChartData,
+      seriesName: string
+
+    }
+
+    export interface LineChartInitializer extends ChartsInitializer<LineChartData[][], RenderedLineChartData> {
 
       colors : string[];
       xAxisFormatter : any;
@@ -103,7 +98,14 @@ declare namespace George {
 
     }
 
-    export interface AreaChartInitializer extends ChartsInitializer<any> {
+    export interface AreaChartData {
+
+      xData: String,
+      yData: number
+
+    }
+
+    export interface AreaChartInitializer extends ChartsInitializer<AreaChartData[], AreaChartData> {
 
       xAxisFormatter(data: any): string;
       margin?: Margin;

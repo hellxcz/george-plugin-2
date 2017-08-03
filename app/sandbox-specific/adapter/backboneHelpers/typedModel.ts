@@ -1,4 +1,4 @@
-import * as Backbone from 'backbone';
+// import * as Backbone from 'backbone';
 
 export abstract class TypedModel<T> extends Backbone.Model {
   constructor(attributes?: T, options?: any) {

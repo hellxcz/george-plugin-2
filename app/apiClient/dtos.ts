@@ -126,13 +126,6 @@ export interface Logo {
 
 }
 
-export interface Balance {
-
-  value: number,
-  currency: string,
-  precision: number
-}
-
 export interface Transaction {
 
   id: string,// "0001999900000000233300197800000050000",
@@ -194,7 +187,7 @@ export interface Transaction {
   partnerData?: any,
   logo: Logo,
   owner: string;//"000000002333",
-  balance?: Balance,
+  balance?: Amount,
   txType: string;//"PREPAIDCARD",
   txDirection: string;//"OUTGOING",
   cardInfo?: any,

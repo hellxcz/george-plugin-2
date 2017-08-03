@@ -21,7 +21,7 @@
     "preinstall": "npm run npmcheckversion",
     "postinstall": "npm run build:dll",
     "prebuild": "npm run build:clean",
-    "build-sandbox": "cross-env NODE_ENV=production webpack --config internals/webpack/webpack.sandbox.babel.js --color -p --progress",
+    "build:sandbox": "cross-env NODE_ENV=production webpack --config internals/webpack/webpack.sandbox.babel.js --color -p --progress",
     "build": "cross-env NODE_ENV=production webpack --config internals/webpack/webpack.prod.babel.js --color -p --progress",
     "build:clean": "npm run test:clean && rimraf ./build",
     "build:dll": "node ./internals/scripts/dependencies.js",
@@ -223,9 +223,6 @@
     "testRegex": "(<rootDir>/app/tests/.*|(\\.|/)test)\\.(ts|tsx|js|jsx)?$"
   },
   "dependencies": {
-    "@types/moment": "^2.13.0",
-    "@types/react": "^15.0.32",
-    "@types/react-dom": "^15.5.1",
     "babel-polyfill": "6.20.0",
     "chalk": "1.1.3",
     "compression": "1.6.2",
@@ -257,6 +254,10 @@
     "whatwg-fetch": "2.0.1"
   },
   "devDependencies": {
+    "@types/moment": "^2.13.0",
+    "@types/react": "^15.0.32",
+    "@types/react-dom": "^15.5.1",
+    "@types/underscore": "^1.8.1",
     "@types/chai": "^4.0.1",
     "@types/jest": "^20.0.4",
     "@types/react-test-renderer": "^15.5.2",
@@ -331,7 +332,7 @@
     "wdio-spec-reporter": "^0.1.0",
     "wdio-typescript-service": "0.0.3",
     "webdriverio": "^4.8.0",
-    "webpack": "2.2.0-rc.3",
+    "webpack": "^2.7.0",
     "webpack-bundle-analyzer": "^2.8.2",
     "webpack-dev-middleware": "1.9.0",
     "webpack-hot-middleware": "2.15.0"
